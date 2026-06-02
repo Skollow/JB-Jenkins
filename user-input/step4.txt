@@ -1,0 +1,26 @@
+Testing - output logs when *rejected*:
+
+    Input requested
+    QA decision received: Rejected
+    QA FAILED: Pipeline will be stopped.
+    QA Rejected by testing teamCleaning up workspace...
+
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard>IF EXIST "C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv" rmdir /S /Q "C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv" 
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\81d243bd2c585b0f4821__mypyc.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\CHARSE~1\cd.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\greenlet\_greenlet.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\MARKUP~1\_speedups.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\SQLALC~1\CYEXTE~1\collections.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\SQLALC~1\CYEXTE~1\immutabledict.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\SQLALC~1\CYEXTE~1\processors.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\SQLALC~1\CYEXTE~1\resultproxy.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\SQLALC~1\CYEXTE~1\util.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Lib\SITE-P~1\xxhash\_xxhash.cp311-win_amd64.pyd - Access is denied.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Scripts\flask.exe - The process cannot access the file because it is being used by another process.
+    C:\jenkins\workspace\user-input\welcome\app\flask-volt-dashboard\.pyenv\Scripts\python.exe - Access is denied.
+
+Testing - output logs when *accepted*:
+
+    Input requested
+    QA decision received: Approved
+    QA PASSED: Continuing pipeline execution.
