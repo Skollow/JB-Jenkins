@@ -29,12 +29,12 @@ pipeline {
                       rmdir /S /Q "%PYENV_HOME%"
                     )
 
-                     py -3.11 -m virtualenv "%PYENV_HOME%"
+                    py -3.11 -m virtualenv "%PYENV_HOME%"
 
-                     call "%PYENV_HOME%\\Scripts\\activate.bat"
+                    call "%PYENV_HOME%\\Scripts\\activate.bat"
 
-                     python -m pip install -r requirements.txt
-                     '''
+                    python -m pip install -r requirements.txt
+                    '''
                 }
             }
         }
@@ -79,43 +79,14 @@ pipeline {
             }
         }
 
-        stage('QA Check') {
+        stage('Archive Artifacts') {
             steps {
-                script {
-                    def QA_Result = input(
-                        message: 'QA Check: verify the Flask application in browser',
-                        ok: 'Submit QA Decision',
-                        parameters: [
-                            choice(
-                                name: 'QA_RESULT',
-                                choices: 'Approved\nRejected',
-                                description: 'Select Approved if application is correct, otherwise Rejected'
-                            )
-                        ]
-                    )
-
-                    env.QA_RESULT = QA_Result
-                    echo "QA decision received: ${env.QA_RESULT}"
-
-                    if (env.QA_RESULT == 'Rejected') {
-                        echo "❌ QA FAILED: Pipeline will be stopped."
-                        currentBuild.result = 'FAILURE'
-                        error("QA Rejected by testing team")
-                    } else {
-                        echo "✅ QA PASSED: Continuing pipeline execution."
-                    }
+                dir("${PROJECT_HOME}") {
+                    archiveArtifacts artifacts: 'flask_app.log', allowEmptyArchive: true
                 }
             }
         }
-
-        stage('Finalize Deployment') {
-            steps {
-                script {
-                    echo "QA approved — pipeline completed successfully"
-                }
-            }
-        }
-    }
+    } 
 
     post {
         always {

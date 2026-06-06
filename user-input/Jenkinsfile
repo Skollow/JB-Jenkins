@@ -1,0 +1,128 @@
+pipeline {
+    agent any
+
+    environment {
+        PYENV_HOME = "${WORKSPACE}\\welcome\\app\\flask-volt-dashboard\\.pyenv"
+        PROJECT_HOME = "${WORKSPACE}\\welcome\\app\\flask-volt-dashboard"
+        FLASK_APP = 'run.py'
+        FLASK_ENV = 'development'
+    }
+
+    stages {
+
+        stage('Clone Flask Project') {
+            steps {
+                git branch: 'jenkins-workshop',
+                    url: 'https://github.com/yanivomc/devopshift-welcome.git'
+            }
+        }
+
+        stage('Setup Python Environment and Install Dependencies') {
+            steps {
+                dir("${PROJECT_HOME}") {
+                    bat '''
+                    py -3.11 -m pip install --upgrade pip
+                    
+                    py -3.11 -m pip install virtualenv
+
+                    IF EXIST "%PYENV_HOME%" (
+                      rmdir /S /Q "%PYENV_HOME%"
+                    )
+
+                     py -3.11 -m virtualenv "%PYENV_HOME%"
+
+                     call "%PYENV_HOME%\\Scripts\\activate.bat"
+
+                     python -m pip install -r requirements.txt
+                     '''
+                }
+            }
+        }
+
+        stage('Run Flask Application') {
+            steps {
+                dir("${PROJECT_HOME}") {
+                    bat '''
+                    echo Starting Flask application...
+
+                    REM Stop existing Flask processes
+                    for /f "tokens=2" %%a in ('tasklist ^| findstr flask') do (
+                        taskkill /PID %%a /F
+                    )
+
+                    start /B cmd /c "call %PYENV_HOME%\\Scripts\\activate.bat && flask run --host=0.0.0.0 --port=5001 > flask_app.log 2>&1"
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Application') {
+            steps {
+                dir("${PROJECT_HOME}") {
+                    script {
+                        sleep 5
+
+                        def output = bat(
+                            script: 'tasklist | findstr flask',
+                            returnStdout: true
+                        ).trim()
+
+                        if (!output) {
+                            echo "Flask application failed to start"
+                            bat 'type flask_app.log'
+                            error "Application not running"
+                        } else {
+                            echo "Flask application is running successfully"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('QA Check') {
+            steps {
+                script {
+                    def QA_Result = input(
+                        message: 'QA Check: verify the Flask application in browser',
+                        ok: 'Submit QA Decision',
+                        parameters: [
+                            choice(
+                                name: 'QA_RESULT',
+                                choices: 'Approved\nRejected',
+                                description: 'Select Approved if application is correct, otherwise Rejected'
+                            )
+                        ]
+                    )
+
+                    env.QA_RESULT = QA_Result
+                    echo "QA decision received: ${env.QA_RESULT}"
+
+                    if (env.QA_RESULT == 'Rejected') {
+                        echo "QA FAILED: Pipeline will be stopped."
+                        currentBuild.result = 'FAILURE'
+                        error("QA Rejected by testing team")
+                    } else {
+                        echo "QA PASSED: Continuing pipeline execution."
+                    }
+                }
+            }
+        }
+
+        stage('Finalize Deployment') {
+            steps {
+                script {
+                    echo "QA approved — pipeline completed successfully"
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            dir("${PROJECT_HOME}") {
+                echo 'Cleaning up workspace...'
+                bat 'IF EXIST "%PYENV_HOME%" rmdir /S /Q "%PYENV_HOME%"'
+            }
+        }
+    }
+}
