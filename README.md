@@ -1,3 +1,7 @@
-1. Each part of the project is placed in a folder.
-2. In each folder there is a "Jenkinsfile", and also, when relevant, step-specific files.
-3. Note: shared library part (groovy) was used from another repo - https://github.com/Skollow/my-shared-library but also shown here per the instructions (but under folder "my-shared-library/shared-library")
+1. Each part of the project is organized into its own folder.
+
+2. Each folder contains a `Jenkinsfile` and, where applicable, additional files specific to that step of the project.
+
+3. **Note:** The shared library component (Groovy) was originally sourced from another repository: `https://github.com/Skollow/my-shared-library`. In accordance with the assignment instructions, it is also included in this repository under `my-shared-library/shared-library`.
+
+4. Regarding the **App-Generator** component, I worked on this part of the project after the original repository had been taken down. As a result, I was only able to provide a theoretical `Jenkinsfile` implementation.

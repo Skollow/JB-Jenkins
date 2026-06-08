@@ -30,9 +30,7 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-
                     pip install pytest
-
                     pytest
                 '''
             }
@@ -51,9 +49,7 @@ pipeline {
 
         always {
             echo 'Cleaning workspace and Docker artifacts...'
-
             cleanWs()
-
             sh """
                 docker rmi -f ${IMAGE_NAME} || true
             """
